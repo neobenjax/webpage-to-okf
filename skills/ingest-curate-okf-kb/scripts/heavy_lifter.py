@@ -21,7 +21,6 @@ if hasattr(sys.stdout, 'reconfigure'):
 if hasattr(sys.stderr, 'reconfigure'):
     sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
-
 CATEGORY_KEYWORDS = {
     "architecture": ["architecture", "design pattern", "microservices", "monolith", "module federation", "system design", "decoupled", "infrastructure"],
     "guides": ["how-to", "tutorial", "step-by-step", "getting started", "setup", "configuration", "install", "guide", "example"],
@@ -57,7 +56,6 @@ def parse_frontmatter(content):
             key = key.strip()
             val = val.strip().strip('"').strip("'")
             if val.startswith('[') and val.endswith(']'):
-                # Simple inline list parse
                 items = [i.strip().strip('"').strip("'") for i in val[1:-1].split(',')]
                 meta[key] = items
             elif val.isdigit():
@@ -70,11 +68,8 @@ def parse_frontmatter(content):
 
 def sanitize_markdown_body(body):
     """Strips leftover HTML tags and cleans line endings."""
-    # Remove inline span/div with style or class attributes
     cleaned = re.sub(r'</?(?:span|div|section|article|font|center)[^>]*>', '', body, flags=re.IGNORECASE)
-    # Replace &nbsp; with space
     cleaned = cleaned.replace('&nbsp;', ' ')
-    # Normalize multiple blank lines to double newlines
     cleaned = re.sub(r'\n{3,}', '\n\n', cleaned)
     return cleaned.strip()
 
@@ -90,9 +85,8 @@ def infer_category_and_tags(title, description, body, existing_tags):
             
     best_category = max(scores, key=scores.get)
     if scores[best_category] == 0:
-        best_category = "concepts" # Default fallback category
+        best_category = "concepts"
 
-    # Extract dynamic tags
     discovered_tags = set(existing_tags or [])
     for cat, keywords in CATEGORY_KEYWORDS.items():
         for kw in keywords:
@@ -147,7 +141,6 @@ def process_file(file_path, output_dir):
     frontmatter = rebuild_frontmatter(meta, category, tags, word_count)
     full_document = f"{frontmatter}\n\n{body}\n"
     
-    # Destination directory: processed/<category>/
     target_category_dir = Path(output_dir) / category
     target_category_dir.mkdir(parents=True, exist_ok=True)
     
@@ -169,7 +162,7 @@ def process_file(file_path, output_dir):
     return summary
 
 def main():
-    base_dir = Path(__file__).resolve().parent.parent.parent
+    base_dir = Path('.').resolve()
     raw_imports_dir = base_dir / 'scaffold' / 'raw_imports'
     processed_dir = base_dir / 'scaffold' / 'processed'
     
@@ -182,7 +175,7 @@ def main():
     results = []
     
     for f in target_files:
-        if f.name == 'README.md':
+        if f.name.lower() in ['index.md', 'readme.md']:
             continue
         res = process_file(f, processed_dir)
         if res:

@@ -26,3 +26,38 @@ Address the execution failure when running `python3 skill/scripts/heavy_lifter.p
 - [x] **Task 5: Walkthrough & User Review**
   - [x] Write detailed walkthrough guide detailing changes and manual testing instructions.
   - [x] Request user approval to stash, commit, push to `feature`, merge to `main`, and update versions/publish.
+
+- [x] **Task 6: HTTP Server Troubleshooting & Cross-Platform Documentation**
+  - [x] Analyze failure modes when running `python3 -m http.server 8000` on Windows vs POSIX (Linux/macOS).
+  - [x] Document command resolution (`python` vs `python3`) and port collision troubleshooting in `README.md`.
+  - [x] Verify local HTTP server execution and asset serving (`index.html`, `styles.css`, `app.js`, `devtools-snippet/extractor.js`).
+
+- [x] **Task 7: OKF Categorization, Indexing & Query Agent Skill Implementation**
+  - [x] Build cross-platform `skill/scripts/kb_indexer.py` script for scanning KB folders, parsing frontmatter, calculating concept graphs, rendering `index.md`, and building `index.json`.
+  - [x] Create `skill/SKILL_CATEGORIZE.md` governing the "categorize" workflow for scanning and indexing any specified KB folder into a dedicated collection directory.
+  - [x] Create `skill/SKILL_QUERY.md` governing the "query" workflow for using the KB collection as the primary source of truth.
+  - [x] Update master `skill/SKILL.md` to integrate both Categorize and Query Agent Skills.
+  - [x] Test `kb_indexer.py` on `scaffold/processed` and verify `index.md` and `index.json` output in `scaffold/collections/`.
+  - [x] Update `README.md` and `tasks/tasks.md` with new agent skill commands and usage.
+
+- [x] **Task 8: Agent Skills Standards, Relative Paths & Collection Categorization Refactoring**
+  - [x] Update `skill/scripts/kb_indexer.py` to create a dedicated collection directory (`scaffold/collections/<name>/`) without touching original input files, generating lowercase `index.md` and `index.json`.
+  - [x] Eliminate all absolute paths across all scripts, skill files, and documentation in favor of relative paths.
+  - [x] Standardize `skill/SKILL_CATEGORIZE.md`, `skill/SKILL_QUERY.md`, and `skill/SKILL.md` following https://agentskills.io standards for composable and independent execution.
+  - [x] Run full validation tests and verify zero absolute routes or uppercase `INDEX.md` remain.
+
+- [x] **Task 9: Decoupled & Portable Agent Skills Architecture (https://agentskills.io Best Practices)**
+  - [x] Create `skills/index-categorize-okf-bundle/` containing `SKILL.md` and `scripts/kb_indexer.py`.
+  - [x] Create `skills/ingest-curate-okf-kb/` containing `SKILL.md`, `scripts/heavy_lifter.py`, and `scripts/validate_kb.py`.
+  - [x] Create `skills/query-okf-source-of-truth/` containing `SKILL.md`.
+  - [x] Remove legacy single `skill/` directory.
+  - [x] Update `README.md`, `app.js`, `index.html`, and `tasks/tasks.md` to reference the new decoupled `skills/` architecture.
+  - [x] Test script execution from all decoupled skill folders across Windows/POSIX environments.
+
+- [x] **Task 10: Refactor index-categorize-okf-bundle for root `knowledge-catalog/` Copy & Index Generation**
+  - [x] Update `skills/index-categorize-okf-bundle/scripts/kb_indexer.py` to copy input KB structure & files into `knowledge-catalog/<collection_name>/`.
+  - [x] Generate self-contained `index.md` and `index.json` in `knowledge-catalog/<collection_name>/` referencing copied files with internal relative paths.
+  - [x] Update `skills/index-categorize-okf-bundle/SKILL.md` instructions detailing collection identification, copying, and catalog summary output.
+  - [x] Clean up legacy `scaffold/collections/` directory.
+  - [x] Update `README.md` and `tasks/tasks.md` with new `knowledge-catalog/` commands and architecture.
+  - [x] Test end-to-end collection indexing on `scaffold/processed` and verify output.

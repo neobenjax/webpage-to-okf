@@ -31,7 +31,7 @@ Follow this complete step-by-step guide to convert any webpage into a standardiz
    - **Windows / Linux**: Press `F12` or `Ctrl + Shift + I`
    - **macOS**: Press `Cmd + Option + I`
 3. Click on the **Console** tab.
-4. Copy the entire contents of [`devtools-snippet/extractor.js`](file:///root/workstation/webinfo_to_knowledge-basd/devtools-snippet/extractor.js).
+4. Copy the entire contents of [`devtools-snippet/extractor.js`](devtools-snippet/extractor.js).
 5. Paste the script into the DevTools Console and press `Enter`.
 
 #### What Happens Behind the Scenes:
@@ -64,12 +64,12 @@ Run the Python heavy-lifter script to sanitize, calculate word counts, infer tax
 
 #### Run on all raw imports:
 ```bash
-python3 skill/scripts/heavy_lifter.py
+python skills/ingest-curate-okf-kb/scripts/heavy_lifter.py
 ```
 
 #### Run on a specific raw import file:
 ```bash
-python3 skill/scripts/heavy_lifter.py scaffold/raw_imports/building-scalable-systems.md
+python skills/ingest-curate-okf-kb/scripts/heavy_lifter.py scaffold/raw_imports/building-scalable-systems.md
 ```
 
 #### Heavy-Lifter Responsibilities:
@@ -86,7 +86,7 @@ python3 skill/scripts/heavy_lifter.py scaffold/raw_imports/building-scalable-sys
 ---
 
 ### Step 4 — AI Agent Skill Cognitive Polish 🧠
-Load the [`skill/SKILL.md`](file:///root/workstation/webinfo_to_knowledge-basd/skill/SKILL.md) skill into your AI Agent (e.g., Google Antigravity / AGY / AI Assistant) to perform high-level cognitive curation:
+Load the [`skills/ingest-curate-okf-kb/SKILL.md`](skills/ingest-curate-okf-kb/SKILL.md) skill into your AI Agent (e.g., Google Antigravity / AGY / AI Assistant) to perform high-level cognitive curation:
 
 1. **Executive Summary**: Add an engaging blockquote summary at the top (`> [!NOTE] Summary: ...`).
 2. **Key Takeaways**: Create a bulleted section under `## Key Takeaways` highlighting 3-5 core takeaways.
@@ -100,7 +100,7 @@ Load the [`skill/SKILL.md`](file:///root/workstation/webinfo_to_knowledge-basd/s
 Run the Knowledge Base validation script to verify 100% compliance against the JSON schema and quality rules:
 
 ```bash
-python3 skill/scripts/validate_kb.py
+python skills/ingest-curate-okf-kb/scripts/validate_kb.py
 ```
 
 #### Validation Rules Checked:
@@ -108,6 +108,28 @@ python3 skill/scripts/validate_kb.py
 - ✅ `type` matches valid OKF types (`article`, `concept`, `guide`, `reference`, `tutorial`, `spec`).
 - ✅ `category` matches valid taxonomy folders (`architecture`, `concepts`, `guides`, `reference`, `tooling`, `tutorials`).
 - ✅ Body text starts with an `# H1` header and contains > 30 words.
+
+---
+
+### Step 6 — OKF Categorization & Collection Indexing 📚
+Instruct your AI Agent to **"categorize"**, **"index"**, or **"organize"** a Knowledge Base directory (e.g., `"Organize the knowledge base in scaffold/processed as decoding-responsible-ai-collection"`).
+
+```bash
+python skills/index-categorize-okf-bundle/scripts/kb_indexer.py scaffold/processed decoding-responsible-ai-collection
+```
+
+#### What Happens Behind the Scenes:
+1. **Copies Structure & Files**: Copies all subdirectories and markdown files into `knowledge-catalog/<collection_name>/` at the project root.
+2. **Generates Collection Index**: Creates `index.md` and `index.json` inside `knowledge-catalog/<collection_name>/` referencing the copied files with internal relative links (`architecture/...`, `concepts/...`, `guides/...`).
+3. **Leaves Source Intact**: The original files in `scaffold/processed/` remain untouched.
+
+---
+
+### Step 7 — AI Agent Source of Truth Querying 🤖
+Instruct your AI Agent to **"query"** the Knowledge Base when asking domain questions. The Agent Skill [`skills/query-okf-source-of-truth/SKILL.md`](skills/query-okf-source-of-truth/SKILL.md) enforces the **Source-of-Truth Rule**:
+1. AI Agent checks `index.json` / `index.md` in `knowledge-catalog/<collection_name>/` **first**.
+2. Retrieves matching Markdown documents via relative file paths.
+3. Formats responses grounded directly in Knowledge Base content with clickable relative file citations.
 
 ---
 
@@ -121,6 +143,13 @@ webpage-to-okf/
 ├── app.js                              # Dashboard interactive logic
 ├── devtools-snippet/
 │   └── extractor.js                    # Chrome DevTools Console DOM Scraper
+├── knowledge-catalog/                  # 3. Root Organized Knowledge Collections
+│   └── decoding-responsible-ai-collection/
+│       ├── index.md                    # Generated human-readable master index catalog
+│       ├── index.json                  # Generated machine-readable index & concept graph
+│       ├── architecture/               # Copied collection documents
+│       ├── concepts/
+│       └── guides/
 ├── scaffold/
 │   ├── README.md                       # Scaffold guide
 │   ├── raw_imports/                    # 1. Landing directory for raw scraped .md files
@@ -135,12 +164,19 @@ webpage-to-okf/
 │   │   └── frontmatter.schema.json     # JSON Schema for OKF YAML Frontmatter
 │   └── templates/
 │       └── article_template.md         # Markdown article template
-└── skill/
-    ├── SKILL.md                        # AI Agent Skill definition & instructions
-    └── scripts/
-        ├── heavy_lifter.py             # Python sanitization & auto-tagging script
-        └── validate_kb.py              # Knowledge base schema validator
-```
+└── skills/                             # Decoupled & Portable Agent Skills
+    ├── index-categorize-okf-bundle/
+    │   ├── SKILL.md                    # Categorization & Indexing Agent Skill
+    │   └── scripts/
+    │       └── kb_indexer.py           # Standalone KB indexer & collection copier
+    ├── ingest-curate-okf-kb/
+    │   ├── SKILL.md                    # Web page extraction & curation Agent Skill
+    │   └── scripts/
+    │       ├── heavy_lifter.py         # Standalone HTML sanitization & router script
+    │       └── validate_kb.py          # Standalone schema validator script
+    └── query-okf-source-of-truth/
+        └── SKILL.md                    # Source of Truth Query Agent Skill
+```,StartLine:114,TargetContent:
 
 ---
 
@@ -172,7 +208,24 @@ scaffold_version: "1.0.0"
 
 Launch the local interactive Web Studio to test the browser snippet, preview live HTML-to-Markdown conversions, and inspect the scaffold visually:
 
-```bash
-python3 -m http.server 8000
-```
-Open `http://localhost:8000` in your browser.
+### Running the Local Web Server
+
+- **Windows**:
+  ```bash
+  python -m http.server 8000
+  ```
+- **macOS / Linux**:
+  ```bash
+  python3 -m http.server 8000
+  ```
+
+Open `http://localhost:8000` in your web browser.
+
+#### 🔧 Troubleshooting HTTP Server Issues:
+1. **`python3` command not recognized on Windows**:
+   - On Windows, Python is usually invoked via `python` or `py`. Use `python -m http.server 8000`.
+2. **Port 8000 in use (`OSError: [Errno 10048] / Address already in use`)**:
+   - Run on an alternative port: `python -m http.server 8080` (or `python3 -m http.server 8080`).
+3. **CORS errors when opening `index.html` directly**:
+   - Avoid opening `file:///path/to/index.html` directly in the browser. Using the local HTTP server (`http://localhost:8000`) allows `fetch('./devtools-snippet/extractor.js')` to load properly.
+

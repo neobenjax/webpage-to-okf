@@ -10,3 +10,17 @@ __pycache__/
 
 # Logs
 *.log
+
+# Dynamic Output Content (Ignore output files inside directories while preserving base folder structure)
+knowledge-catalog/*
+!knowledge-catalog/.gitkeep
+
+scaffold/raw_imports/*
+!scaffold/raw_imports/.gitkeep
+
+scaffold/processed/*
+!scaffold/processed/.gitkeep
+!scaffold/processed/*/
+scaffold/processed/*/*
+!scaffold/processed/*/.gitkeep
+!scaffold/processed/architecture/sample_scraped_article.md
