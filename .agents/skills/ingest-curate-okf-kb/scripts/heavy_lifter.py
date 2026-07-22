@@ -21,6 +21,8 @@ if hasattr(sys.stdout, 'reconfigure'):
 if hasattr(sys.stderr, 'reconfigure'):
     sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
+VALID_CATEGORIES = {'architecture', 'guides', 'reference', 'concepts', 'tooling', 'tutorials'}
+
 CATEGORY_KEYWORDS = {
     "architecture": ["architecture", "design pattern", "microservices", "monolith", "module federation", "system design", "decoupled", "infrastructure"],
     "guides": ["how-to", "tutorial", "step-by-step", "getting started", "setup", "configuration", "install", "guide", "example"],
@@ -73,21 +75,24 @@ def sanitize_markdown_body(body):
     cleaned = re.sub(r'\n{3,}', '\n\n', cleaned)
     return cleaned.strip()
 
-def infer_category_and_tags(title, description, body, existing_tags):
+def infer_category_and_tags(title, description, body, existing_tags, existing_category=None):
     """Infers taxonomy category and enriches tag list based on keyword density."""
-    full_text = f"{title} {description} {body}".lower()
-    
-    scores = {cat: 0 for cat in CATEGORY_KEYWORDS}
-    for cat, keywords in CATEGORY_KEYWORDS.items():
-        for kw in keywords:
-            matches = len(re.findall(r'\b' + re.escape(kw) + r'\b', full_text))
-            scores[cat] += matches
-            
-    best_category = max(scores, key=scores.get)
-    if scores[best_category] == 0:
-        best_category = "concepts"
+    if existing_category and str(existing_category).lower() in VALID_CATEGORIES and str(existing_category).lower() != "uncategorized":
+        best_category = str(existing_category).lower()
+    else:
+        full_text = f"{title} {description} {body}".lower()
+        scores = {cat: 0 for cat in CATEGORY_KEYWORDS}
+        for cat, keywords in CATEGORY_KEYWORDS.items():
+            for kw in keywords:
+                matches = len(re.findall(r'\b' + re.escape(kw) + r'\b', full_text))
+                scores[cat] += matches
+                
+        best_category = max(scores, key=scores.get)
+        if scores[best_category] == 0:
+            best_category = "concepts"
 
     discovered_tags = set(existing_tags or [])
+    full_text = f"{title} {description} {body}".lower()
     for cat, keywords in CATEGORY_KEYWORDS.items():
         for kw in keywords:
             if kw in full_text and len(kw) > 3:
@@ -95,26 +100,34 @@ def infer_category_and_tags(title, description, body, existing_tags):
                 
     return best_category, sorted(list(discovered_tags))
 
-def rebuild_frontmatter(meta, category, tags, word_count):
-    """Constructs clean YAML frontmatter block."""
+def rebuild_frontmatter(meta, category, tags, word_count, default_title):
+    """Constructs clean YAML frontmatter block adhering to schema standards."""
     reading_time = max(1, round(word_count / 200))
-    meta['type'] = meta.get('type', 'article')
+    
+    meta['title'] = meta.get('title') or default_title
+    valid_types = ['article', 'concept', 'guide', 'reference', 'tutorial', 'spec']
+    meta['type'] = meta.get('type') if meta.get('type') in valid_types else 'article'
+    meta['description'] = meta.get('description') or f"Extracted knowledge base document on {meta['title']}"
+    meta['source_url'] = meta.get('source_url') or 'https://knowledge.base/local-import'
+    meta['date_scraped'] = meta.get('date_scraped') or '2026-07-22'
     meta['category'] = category
     meta['tags'] = tags
-    meta['reading_time_min'] = reading_time
+    meta['reading_time_min'] = meta.get('reading_time_min') or reading_time
     meta['status'] = 'normalized'
-    meta['scaffold_version'] = '1.0.0'
+    meta['scaffold_version'] = meta.get('scaffold_version') or '1.0.0'
     
     yaml_lines = ['---']
     for k, v in meta.items():
         if isinstance(v, list):
             yaml_lines.append(f"{k}:")
             for item in v:
-                yaml_lines.append(f'  - "{item}"')
+                escaped_item = str(item).replace('"', '\\"')
+                yaml_lines.append(f'  - "{escaped_item}"')
         elif isinstance(v, int):
             yaml_lines.append(f"{k}: {v}")
         else:
-            yaml_lines.append(f'{k}: "{v}"')
+            val_str = str(v).replace('"', '\\"')
+            yaml_lines.append(f'{k}: "{val_str}"')
     yaml_lines.append('---')
     return '\n'.join(yaml_lines)
 
@@ -124,21 +137,35 @@ def process_file(file_path, output_dir):
     if not path.exists():
         print(f"Error: File {file_path} not found.")
         return None
+    if not path.is_file():
+        print(f"Error: Path {file_path} is not a file.")
+        return None
 
-    with open(path, 'r', encoding='utf-8') as f:
-        content = f.read()
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            content = f.read()
+    except Exception as e:
+        print(f"Error reading {file_path}: {e}")
+        return None
 
     meta, raw_body = parse_frontmatter(content)
     body = sanitize_markdown_body(raw_body)
     
-    title = meta.get('title', path.stem.replace('-', ' ').title())
+    default_title = path.stem.replace('-', ' ').title()
+    title = meta.get('title', default_title)
     description = meta.get('description', '')
     existing_tags = meta.get('tags', [])
+    existing_category = meta.get('category', None)
     
     word_count = len(body.split())
-    category, tags = infer_category_and_tags(title, description, body, existing_tags)
+    category, tags = infer_category_and_tags(title, description, body, existing_tags, existing_category)
     
-    frontmatter = rebuild_frontmatter(meta, category, tags, word_count)
+    # Ensure H1 header exists if missing
+    if not body.startswith('# '):
+        body = f"# {title}\n\n{body}"
+        word_count = len(body.split())
+
+    frontmatter = rebuild_frontmatter(meta, category, tags, word_count, default_title)
     full_document = f"{frontmatter}\n\n{body}\n"
     
     target_category_dir = Path(output_dir) / category
@@ -161,22 +188,46 @@ def process_file(file_path, output_dir):
     }
     return summary
 
+def collect_target_files(arg_path, raw_imports_dir):
+    files = []
+    if arg_path:
+        path = Path(arg_path)
+        if not path.exists():
+            print(f"Error: Target path '{arg_path}' does not exist.")
+            return []
+        if path.is_file():
+            files.append(path)
+        elif path.is_dir():
+            files.extend(list(path.rglob('*')))
+    else:
+        files.extend(list(raw_imports_dir.rglob('*')))
+
+    valid_files = []
+    for f in files:
+        if not f.is_file():
+            continue
+        if f.name.lower() in ['index.md', 'readme.md', '.gitkeep']:
+            continue
+        if any(part.startswith('.') for part in f.parts):
+            continue
+        # Process files ending with .md or .markdown
+        if f.suffix.lower() in ['.md', '.markdown']:
+            valid_files.append(f)
+
+    return sorted(valid_files)
+
 def main():
     base_dir = Path('.').resolve()
     raw_imports_dir = base_dir / 'scaffold' / 'raw_imports'
     processed_dir = base_dir / 'scaffold' / 'processed'
     
-    if len(sys.argv) > 1:
-        target_files = [Path(sys.argv[1])]
-    else:
-        target_files = list(raw_imports_dir.glob('*.md'))
+    arg_path = sys.argv[1] if len(sys.argv) > 1 else None
+    target_files = collect_target_files(arg_path, raw_imports_dir)
 
     print(f"⚙️ Running Heavy-Lifter on {len(target_files)} raw import(s)...")
     results = []
     
     for f in target_files:
-        if f.name.lower() in ['index.md', 'readme.md']:
-            continue
         res = process_file(f, processed_dir)
         if res:
             results.append(res)
@@ -187,3 +238,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
