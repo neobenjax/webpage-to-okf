@@ -15,6 +15,13 @@ import sys
 import json
 from pathlib import Path
 
+# Ensure UTF-8 output encoding for cross-platform compatibility (e.g. Windows console)
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if hasattr(sys.stderr, 'reconfigure'):
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
+
 CATEGORY_KEYWORDS = {
     "architecture": ["architecture", "design pattern", "microservices", "monolith", "module federation", "system design", "decoupled", "infrastructure"],
     "guides": ["how-to", "tutorial", "step-by-step", "getting started", "setup", "configuration", "install", "guide", "example"],

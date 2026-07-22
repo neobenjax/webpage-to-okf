@@ -1,0 +1,9 @@
+# Requirements for Webpage to OKF Knowledge Base Pipeline
+# Python version requirement: Python >= 3.8
+
+# Core pipeline scripts (heavy_lifter.py & validate_kb.py) rely strictly on Python Standard Library.
+# No external PyPI packages are strictly required to run the pipeline.
+
+# Optional development & schema validation packages:
+jsonschema>=4.0.0
+pytest>=7.0.0

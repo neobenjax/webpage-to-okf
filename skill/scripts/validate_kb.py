@@ -7,6 +7,13 @@ Validates all articles in scaffold/processed/ against schema compliance and qual
 import sys
 import json
 from pathlib import Path
+
+# Ensure UTF-8 output encoding for cross-platform compatibility (e.g. Windows console)
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if hasattr(sys.stderr, 'reconfigure'):
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 from heavy_lifter import parse_frontmatter
 
 def validate_article(path):
