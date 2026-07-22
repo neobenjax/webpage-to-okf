@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "KnowledgeBaseArticleFrontmatter",
+  "type": "object",
+  "required": [
+    "title",
+    "description",
+    "source_url",
+    "date_scraped",
+    "status",
+    "category",
+    "tags"
+  ],
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Article title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Concise summary of the article"
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL where content was scraped from"
+    },
+    "domain": {
+      "type": "string",
+      "description": "Origin domain name"
+    },
+    "date_scraped": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO date string (YYYY-MM-DD)"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["raw_import", "normalized", "reviewed", "published"],
+      "description": "Status of the article in the knowledge base pipeline"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "uncategorized",
+        "concepts",
+        "guides",
+        "reference",
+        "architecture",
+        "tutorials",
+        "tooling"
+      ],
+      "description": "Primary taxonomy category"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "Normalized descriptive tags"
+    },
+    "author": {
+      "type": "string"
+    },
+    "reading_time_min": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "scaffold_version": {
+      "type": "string"
+    }
+  }
+}

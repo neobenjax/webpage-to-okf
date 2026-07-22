@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowledge Base Studio & DevTools Extractor Suite</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">Open Knowledge Base Suite v1.0</div>
+      <h1>Knowledge Base Studio & Extractor</h1>
+      <p>Convert webpage content into standardized YAML Frontmatter Markdown files, organize them into a ready-to-work scaffold, and curate them with AI Agent skills.</p>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="tabs">
+      <button class="tab-btn active" onclick="switchTab('snippet')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Chrome DevTools Snippet
+      </button>
+      <button class="tab-btn" onclick="switchTab('converter')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+        Live Converter Sandbox
+      </button>
+      <button class="tab-btn" onclick="switchTab('scaffold')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M3 7l9 6 9-6M3 7l9-6 9 6"/></svg>
+        Knowledge Base Scaffold
+      </button>
+      <button class="tab-btn" onclick="switchTab('pipeline')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        AI Skill & Heavy Lifter
+      </button>
+    </nav>
+
+    <!-- Tab 1: DevTools Snippet -->
+    <div id="tab-snippet" class="panel active">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            Chrome DevTools Console JavaScript Snippet
+          </div>
+          <button class="btn btn-primary" onclick="copySnippetCode()">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            <span id="copy-btn-text">Copy Script</span>
+          </button>
+        </div>
+        <p style="color: var(--text-muted); margin-bottom: 1.25rem;">
+          Run this JavaScript directly inside Chrome Developer Tools (<kbd>F12</kbd> or <kbd>Cmd+Option+I</kbd> &rarr; <strong>Console</strong> tab). It automatically extracts article text, formats headings, generates YAML frontmatter, prints to console, and places the markdown directly onto your clipboard!
+        </p>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span>extractor.js</span>
+            <span>JavaScript (Chrome Console)</span>
+          </div>
+          <pre><code id="snippet-code-display">Loading snippet...</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Live Converter Sandbox -->
+    <div id="tab-converter" class="panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            Live Web Content to Markdown Converter
+          </div>
+          <button class="btn btn-primary" onclick="runLiveConverter()">Convert Now</button>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">
+              Input HTML or Plain Text Content:
+            </label>
+            <textarea id="sandbox-input" placeholder="Paste HTML or raw webpage text here..."></textarea>
+          </div>
+          <div>
+            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">
+              Generated YAML Frontmatter Markdown:
+            </label>
+            <textarea id="sandbox-output" readonly placeholder="Converted Markdown result will appear here..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Scaffold Explorer -->
+    <div id="tab-scaffold" class="panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M3 7l9 6 9-6M3 7l9-6 9 6"/></svg>
+            Ready-to-Work Knowledge Base Scaffold
+          </div>
+        </div>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+          The scaffold structure provides landing folders for raw imports, validation schemas, and organized taxonomy folders:
+        </p>
+
+        <div class="grid-2">
+          <div style="background: #0d1117; padding: 1.5rem; border-radius: 10px; border: 1px solid var(--border-color); font-family: var(--font-mono); font-size: 0.9rem;">
+            <div style="color: var(--accent-cyan); font-weight: 700; margin-bottom: 0.75rem;">📁 Scaffold Directory Tree</div>
+            <pre style="color: #94a3b8; line-height: 1.7;">
+scaffold/
+├── raw_imports/          <span style="color: var(--accent-amber);">(Scraped copy-pastes)</span>
+│   └── sample_article.md
+├── processed/            <span style="color: var(--accent-emerald);">(Curated Knowledge Base)</span>
+│   ├── architecture/
+│   ├── concepts/
+│   ├── guides/
+│   ├── reference/
+│   └── tooling/
+├── schema/
+│   └── frontmatter.schema.json
+└── templates/
+    └── article_template.md</pre>
+          </div>
+
+          <div style="background: #0d1117; padding: 1.5rem; border-radius: 10px; border: 1px solid var(--border-color);">
+            <div style="color: var(--accent-cyan); font-weight: 700; margin-bottom: 0.75rem; font-family: var(--font-mono);">📄 Sample Processed Article</div>
+            <textarea readonly style="height: 220px; font-size: 0.82rem;">---
+title: "Understanding Micro-Frontend Architectures with Module Federation"
+description: "Deep dive into micro-frontend decoupling."
+source_url: "https://tech-blog.example.com/posts/micro-frontend"
+date_scraped: "2026-07-22"
+status: "normalized"
+category: "architecture"
+tags:
+  - "micro-frontend"
+  - "webpack"
+reading_time_min: 4
+---
+
+# Understanding Micro-Frontend Architectures...
+...</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 4: AI Skill & Heavy Lifter Pipeline -->
+    <div id="tab-pipeline" class="panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            Automated Knowledge Base Curation Pipeline
+          </div>
+        </div>
+
+        <div class="pipeline-steps">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <div class="step-title">DevTools Scraper</div>
+            <div class="step-desc">Extracts DOM into Markdown & generates frontmatter meta in browser.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <div class="step-title">Raw Import</div>
+            <div class="step-desc">User pastes snippet into <code>raw_imports/page.md</code>.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <div class="step-title">Heavy-Lifter Script</div>
+            <div class="step-desc">Python script sanitizes HTML, calculates metrics, infers categories & tags.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-number">4</div>
+            <div class="step-title">AI Cognitive Polish</div>
+            <div class="step-desc">Agent summarizes key takeaways, refines taxonomy & checks schema.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
