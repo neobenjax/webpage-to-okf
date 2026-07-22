@@ -19,10 +19,15 @@ def validate_article(path):
     meta, body = parse_frontmatter(content)
     
     # Required frontmatter keys
-    required_keys = ['title', 'description', 'source_url', 'date_scraped', 'status', 'category', 'tags']
+    required_keys = ['title', 'type', 'description', 'source_url', 'date_scraped', 'status', 'category', 'tags']
     for key in required_keys:
         if key not in meta or not meta[key]:
             errors.append(f"Missing required frontmatter key: '{key}'")
+
+    # Type validation
+    valid_types = ['article', 'concept', 'guide', 'reference', 'tutorial', 'spec']
+    if meta.get('type') not in valid_types:
+        errors.append(f"Invalid type '{meta.get('type')}'. Must be one of: {valid_types}")
 
     # Category validation
     valid_categories = ['concepts', 'guides', 'reference', 'architecture', 'tutorials', 'tooling']

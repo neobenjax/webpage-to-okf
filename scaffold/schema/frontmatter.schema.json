@@ -4,6 +4,7 @@
   "type": "object",
   "required": [
     "title",
+    "type",
     "description",
     "source_url",
     "date_scraped",
@@ -16,6 +17,11 @@
       "type": "string",
       "minLength": 3,
       "description": "Article title"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["article", "concept", "guide", "reference", "tutorial", "spec"],
+      "description": "Mandatory OKF content artifact type"
     },
     "description": {
       "type": "string",

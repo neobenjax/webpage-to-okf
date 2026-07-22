@@ -245,6 +245,7 @@
   const yamlFrontmatter = [
     '---',
     `title: "${meta.title}"`,
+    `type: "article"`,
     `description: "${meta.description}"`,
     `source_url: "${meta.source_url}"`,
     `domain: "${meta.domain}"`,

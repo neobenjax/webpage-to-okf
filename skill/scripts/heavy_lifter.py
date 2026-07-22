@@ -97,6 +97,7 @@ def infer_category_and_tags(title, description, body, existing_tags):
 def rebuild_frontmatter(meta, category, tags, word_count):
     """Constructs clean YAML frontmatter block."""
     reading_time = max(1, round(word_count / 200))
+    meta['type'] = meta.get('type', 'article')
     meta['category'] = category
     meta['tags'] = tags
     meta['reading_time_min'] = reading_time

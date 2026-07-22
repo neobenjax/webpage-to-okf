@@ -1,5 +1,6 @@
 ---
 title: "Understanding Micro-Frontend Architectures with Module Federation"
+type: "article"
 description: "A comprehensive deep dive into breaking monolithic frontend applications into independently deployable micro-apps using Webpack 5 Module Federation."
 source_url: "https://tech-blog.example.com/posts/micro-frontend-module-federation"
 domain: "tech-blog.example.com"

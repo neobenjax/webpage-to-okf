@@ -1,5 +1,6 @@
 ---
 title: "{{TITLE}}"
+type: "{{TYPE}}"
 description: "{{DESCRIPTION}}"
 source_url: "{{SOURCE_URL}}"
 domain: "{{DOMAIN}}"

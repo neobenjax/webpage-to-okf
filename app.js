@@ -66,6 +66,7 @@ function runLiveConverter() {
 
   const output = `---
 title: "${title}"
+type: "article"
 description: "Converted live content snippet"
 source_url: "https://example.com/sandbox-page"
 domain: "example.com"

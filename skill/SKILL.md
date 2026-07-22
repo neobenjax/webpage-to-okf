@@ -75,6 +75,7 @@ All articles must strictly comply with `scaffold/schema/frontmatter.schema.json`
 ```yaml
 ---
 title: "Clean Article Title"
+type: "article | concept | guide | reference | tutorial | spec"
 description: "High-level summary"
 source_url: "https://example.com/source"
 domain: "example.com"
