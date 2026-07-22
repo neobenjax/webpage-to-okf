@@ -64,12 +64,12 @@ Run the Python heavy-lifter script to sanitize, calculate word counts, infer tax
 
 #### Run on all raw imports:
 ```bash
-python skills/ingest-curate-okf-kb/scripts/heavy_lifter.py
+python .agents/skills/ingest-curate-okf-kb/scripts/heavy_lifter.py
 ```
 
 #### Run on a specific raw import file:
 ```bash
-python skills/ingest-curate-okf-kb/scripts/heavy_lifter.py scaffold/raw_imports/building-scalable-systems.md
+python .agents/skills/ingest-curate-okf-kb/scripts/heavy_lifter.py scaffold/raw_imports/building-scalable-systems.md
 ```
 
 #### Heavy-Lifter Responsibilities:
@@ -86,7 +86,7 @@ python skills/ingest-curate-okf-kb/scripts/heavy_lifter.py scaffold/raw_imports/
 ---
 
 ### Step 4 — AI Agent Skill Cognitive Polish 🧠
-Load the [`skills/ingest-curate-okf-kb/SKILL.md`](skills/ingest-curate-okf-kb/SKILL.md) skill into your AI Agent (e.g., Google Antigravity / AGY / AI Assistant) to perform high-level cognitive curation:
+Load the [`.agents/skills/ingest-curate-okf-kb/SKILL.md`](.agents/skills/ingest-curate-okf-kb/SKILL.md) skill into your AI Agent (e.g., Google Antigravity / AGY / AI Assistant) to perform high-level cognitive curation:
 
 1. **Executive Summary**: Add an engaging blockquote summary at the top (`> [!NOTE] Summary: ...`).
 2. **Key Takeaways**: Create a bulleted section under `## Key Takeaways` highlighting 3-5 core takeaways.
@@ -100,7 +100,7 @@ Load the [`skills/ingest-curate-okf-kb/SKILL.md`](skills/ingest-curate-okf-kb/SK
 Run the Knowledge Base validation script to verify 100% compliance against the JSON schema and quality rules:
 
 ```bash
-python skills/ingest-curate-okf-kb/scripts/validate_kb.py
+python .agents/skills/ingest-curate-okf-kb/scripts/validate_kb.py
 ```
 
 #### Validation Rules Checked:
@@ -115,7 +115,7 @@ python skills/ingest-curate-okf-kb/scripts/validate_kb.py
 Instruct your AI Agent to **"categorize"**, **"index"**, or **"organize"** a Knowledge Base directory (e.g., `"Organize the knowledge base in scaffold/processed as decoding-responsible-ai-collection"`).
 
 ```bash
-python skills/index-categorize-okf-bundle/scripts/kb_indexer.py scaffold/processed decoding-responsible-ai-collection
+python .agents/skills/index-categorize-okf-bundle/scripts/kb_indexer.py scaffold/processed decoding-responsible-ai-collection
 ```
 
 #### What Happens Behind the Scenes:
@@ -126,7 +126,7 @@ python skills/index-categorize-okf-bundle/scripts/kb_indexer.py scaffold/process
 ---
 
 ### Step 7 — AI Agent Source of Truth Querying 🤖
-Instruct your AI Agent to **"query"** the Knowledge Base when asking domain questions. The Agent Skill [`skills/query-okf-source-of-truth/SKILL.md`](skills/query-okf-source-of-truth/SKILL.md) enforces the **Source-of-Truth Rule**:
+Instruct your AI Agent to **"query"** the Knowledge Base when asking domain questions. The Agent Skill [`.agents/skills/query-okf-source-of-truth/SKILL.md`](.agents/skills/query-okf-source-of-truth/SKILL.md) enforces the **Source-of-Truth Rule**:
 1. AI Agent checks `index.json` / `index.md` in `knowledge-catalog/<collection_name>/` **first**.
 2. Retrieves matching Markdown documents via relative file paths.
 3. Formats responses grounded directly in Knowledge Base content with clickable relative file citations.
@@ -164,18 +164,19 @@ webpage-to-okf/
 │   │   └── frontmatter.schema.json     # JSON Schema for OKF YAML Frontmatter
 │   └── templates/
 │       └── article_template.md         # Markdown article template
-└── skills/                             # Decoupled & Portable Agent Skills
-    ├── index-categorize-okf-bundle/
-    │   ├── SKILL.md                    # Categorization & Indexing Agent Skill
-    │   └── scripts/
-    │       └── kb_indexer.py           # Standalone KB indexer & collection copier
-    ├── ingest-curate-okf-kb/
-    │   ├── SKILL.md                    # Web page extraction & curation Agent Skill
-    │   └── scripts/
-    │       ├── heavy_lifter.py         # Standalone HTML sanitization & router script
-    │       └── validate_kb.py          # Standalone schema validator script
-    └── query-okf-source-of-truth/
-        └── SKILL.md                    # Source of Truth Query Agent Skill
+└── .agents/
+    └── skills/                         # Decoupled & Portable Agent Skills
+        ├── index-categorize-okf-bundle/
+        │   ├── SKILL.md                # Categorization & Indexing Agent Skill
+        │   └── scripts/
+        │       └── kb_indexer.py       # Standalone KB indexer & collection copier
+        ├── ingest-curate-okf-kb/
+        │   ├── SKILL.md                # Web page extraction & curation Agent Skill
+        │   └── scripts/
+        │       ├── heavy_lifter.py     # Standalone HTML sanitization & router script
+        │       └── validate_kb.py      # Standalone schema validator script
+        └── query-okf-source-of-truth/
+            └── SKILL.md                # Source of Truth Query Agent Skill
 ```,StartLine:114,TargetContent:
 
 ---

@@ -61,3 +61,9 @@ Address the execution failure when running `python3 skill/scripts/heavy_lifter.p
   - [x] Clean up legacy `scaffold/collections/` directory.
   - [x] Update `README.md` and `tasks/tasks.md` with new `knowledge-catalog/` commands and architecture.
   - [x] Test end-to-end collection indexing on `scaffold/processed` and verify output.
+
+- [x] **Task 11: Refactor Agent Skills to `.agents/skills/` Directory Standard**
+  - [x] Move `skills/` directory to `.agents/skills/` following Agents' Skills best practices.
+  - [x] Update path references across `.agents/skills/*/SKILL.md` skill instructions and Python scripts.
+  - [x] Update `README.md` workflow steps, commands, and repository structure tree.
+  - [x] Verify Knowledge Base validation (`validate_kb.py`) and collection indexing (`kb_indexer.py`).

@@ -29,11 +29,11 @@ When triggered:
 ### Step 2: Run the Indexer & Catalog Copy Script
 Execute the script located inside this skill bundle, passing the source directory and collection name:
 ```bash
-python skills/index-categorize-okf-bundle/scripts/kb_indexer.py <source_directory> [collection_name]
+python .agents/skills/index-categorize-okf-bundle/scripts/kb_indexer.py <source_directory> [collection_name]
 ```
 *Example:*
 ```bash
-python skills/index-categorize-okf-bundle/scripts/kb_indexer.py scaffold/processed decoding-responsible-ai-collection
+python .agents/skills/index-categorize-okf-bundle/scripts/kb_indexer.py scaffold/processed decoding-responsible-ai-collection
 ```
 
 #### What the Script Executed Behind the Scenes:

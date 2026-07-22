@@ -19,21 +19,21 @@ Activate this skill whenever the user explicitly asks to **"ingest"**, **"curate
 ### Step 1: Run Heavy-Lifter Automation
 Execute the heavy lifter script to clean up raw imports and organize them into preliminary taxonomy folders:
 ```bash
-python skills/ingest-curate-okf-kb/scripts/heavy_lifter.py [optional_raw_import_file]
+python .agents/skills/ingest-curate-okf-kb/scripts/heavy_lifter.py [optional_raw_import_file]
 ```
 *Example (All raw imports):*
 ```bash
-python skills/ingest-curate-okf-kb/scripts/heavy_lifter.py
+python .agents/skills/ingest-curate-okf-kb/scripts/heavy_lifter.py
 ```
 *Example (Single raw import):*
 ```bash
-python skills/ingest-curate-okf-kb/scripts/heavy_lifter.py scaffold/raw_imports/article.md
+python .agents/skills/ingest-curate-okf-kb/scripts/heavy_lifter.py scaffold/raw_imports/article.md
 ```
 
 ### Step 2: Validate Schema & Quality Gate
 Run the validator script to enforce 100% compliance against `scaffold/schema/frontmatter.schema.json`:
 ```bash
-python skills/ingest-curate-okf-kb/scripts/validate_kb.py
+python .agents/skills/ingest-curate-okf-kb/scripts/validate_kb.py
 ```
 
 ---
